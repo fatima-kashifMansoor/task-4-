@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Student Dashboard for managing courses, assignments, grades, attendance, schedule and academic performance.">
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="theme-color" content="#4f46e5">
+
+    <title>Student Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class"
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-slate-100 text-slate-800 transition-colors duration-300 dark:bg-slate-950 dark:text-white">
+
+<div class="flex min-h-screen">
+
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 lg:static lg:translate-x-0">
+
+        <div class="flex h-20 items-center justify-between border-b border-slate-200 px-6 dark:border-slate-800">
+
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-lg font-bold text-white">
+                    S
+                </div>
+
+                <div>
+                    <h1 class="font-bold text-slate-900 dark:text-white">StudentHub</h1>
+                    <p class="text-xs text-slate-500">Academic Portal</p>
+                </div>
+            </div>
+
+            <button id="closeSidebar"
+                class="text-xl text-slate-500 lg:hidden">
+                ×
+            </button>
+
+        </div>
+
+        <nav class="flex-1 space-y-2 p-4">
+
+            <button data-section="overview"
+                class="nav-link active-nav flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>🏠</span>
+                Overview
+            </button>
+
+            <button data-section="courses"
+                class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>📚</span>
+                Courses
+            </button>
+
+            <button data-section="assignments"
+                class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>📝</span>
+                Assignments
+            </button>
+
+            <button data-section="schedule"
+                class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>🗓️</span>
+                Schedule
+            </button>
+
+            <button data-section="grades"
+                class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>📊</span>
+                Grades
+            </button>
+
+            <button data-section="announcements"
+                class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>📢</span>
+                Announcements
+            </button>
+
+            <button data-section="settings"
+                class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium">
+                <span>⚙️</span>
+                Settings
+            </button>
+
+        </nav>
+
+        <div class="border-t border-slate-200 p-4 dark:border-slate-800">
+
+            <div class="flex items-center gap-3 rounded-xl bg-slate-50 p-3 dark:bg-slate-800">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300">
+                    FK
+                </div>
+
+                <div class="min-w-0">
+                    <p class="truncate text-sm font-semibold">Student</p>
+                    <p class="truncate text-xs text-slate-500">Computer Science</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+    <div id="overlay"
+        class="fixed inset-0 z-40 hidden bg-black/50 lg:hidden">
+    </div>
+
+    <main class="min-w-0 flex-1">
+
+        <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95">
+
+            <div class="flex h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+
+                <div class="flex items-center gap-3">
+
+                    <button id="openSidebar"
+                        class="rounded-lg p-2 text-xl hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden">
+                        ☰
+                    </button>
+
+                    <div>
+                        <p class="text-sm text-slate-500">Welcome back 👋</p>
+                        <h2 id="pageTitle" class="text-lg font-bold">Overview</h2>
+                    </div>
+
+                </div>
+
+                <div class="hidden max-w-md flex-1 md:block">
+
+                    <div class="relative">
+                        <input id="searchInput"
+                            type="search"
+                            placeholder="Search courses, assignments..."
+                            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 pl-11 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-800 dark:focus:ring-indigo-900">
+
+                        <span class="absolute left-4 top-3 text-slate-400">
+                            🔍
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="flex items-center gap-2">
+
+                    <button id="themeButton"
+                        class="rounded-xl border border-slate-200 p-3 transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">
+                        🌙
+                    </button>
+
+                    <button id="notificationButton"
+                        class="relative rounded-xl border border-slate-200 p-3 transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">
+                        🔔
+                        <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div id="searchResults"
+                class="mx-4 mb-3 hidden rounded-xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900 md:mx-auto md:max-w-md">
+            </div>
+
+        </header>
+
+        <div class="p-4 sm:p-6 lg:p-8">
+
+            <section id="overview" class="dashboard-section">
+
+                <div class="mb-8">
+                    <h1 class="text-2xl font-bold sm:text-3xl">Student Overview</h1>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        Here is your academic performance and today's activities.
+                    </p>
+                </div>
+
+                <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-slate-500">Current GPA</p>
+                            <span class="rounded-lg bg-indigo-100 p-2 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300">🎓</span>
+                        </div>
+
+                        <h3 class="mt-4 text-3xl font-bold">3.72</h3>
+
+                        <p class="mt-2 text-sm text-emerald-600">
+                            ↑ 0.18 this semester
+                        </p>
+
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-slate-500">Attendance</p>
+                            <span class="rounded-lg bg-emerald-100 p-2 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300">✓</span>
+                        </div>
+
+                        <h3 class="mt-4 text-3xl font-bold">92%</h3>
+
+                        <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                            <div class="h-full w-[92%] rounded-full bg-emerald-500"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-slate-500">Credits Earned</p>
+                            <span class="rounded-lg bg-blue-100 p-2 text-blue-600 dark:bg-blue-900 dark:text-blue-300">📚</span>
+                        </div>
+
+                        <h3 class="mt-4 text-3xl font-bold">84</h3>
+
+                        <p class="mt-2 text-sm text-slate-500">
+                            Out of 120 credits
+                        </p>
+
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-slate-500">Pending Work</p>
+                            <span class="rounded-lg bg-orange-100 p-2 text-orange-600 dark:bg-orange-900 dark:text-orange-300">📝</span>
+                        </div>
+
+                        <h3 class="mt-4 text-3xl font-bold">6</h3>
+
+                        <p class="mt-2 text-sm text-orange-600">
+                            2 due this week
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-6 grid gap-6 xl:grid-cols-3">
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-2">
+
+                        <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+
+                            <div>
+                                <h2 class="text-lg font-bold">Academic Performance</h2>
+                                <p class="text-sm text-slate-500">GPA progress by semester</p>
+                            </div>
+
+                            <select id="semesterSelect"
+                                class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                <option value="all">All Semesters</option>
+                                <option value="recent">Recent Semesters</option>
+                            </select>
+
+                        </div>
+
+                        <div class="h-64">
+                            <svg viewBox="0 0 700 260" class="h-full w-full" preserveAspectRatio="none">
+
+                                <line x1="50" y1="30" x2="680" y2="30" class="chart-line"/>
+                                <line x1="50" y1="80" x2="680" y2="80" class="chart-line"/>
+                                <line x1="50" y1="130" x2="680" y2="130" class="chart-line"/>
+                                <line x1="50" y1="180" x2="680" y2="180" class="chart-line"/>
+                                <line x1="50" y1="230" x2="680" y2="230" class="chart-line"/>
+
+                                <polyline
+                                    id="performanceLine"
+                                    points="60,170 160,150 260,130 360,110 460,90 560,70 660,55"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="text-indigo-600"/>
+
+                                <circle cx="60" cy="170" r="6" class="fill-indigo-600"/>
+                                <circle cx="160" cy="150" r="6" class="fill-indigo-600"/>
+                                <circle cx="260" cy="130" r="6" class="fill-indigo-600"/>
+                                <circle cx="360" cy="110" r="6" class="fill-indigo-600"/>
+                                <circle cx="460" cy="90" r="6" class="fill-indigo-600"/>
+                                <circle cx="560" cy="70" r="6" class="fill-indigo-600"/>
+                                <circle cx="660" cy="55" r="6" class="fill-indigo-600"/>
+
+                                <text x="45" y="250" class="chart-text">S1</text>
+                                <text x="145" y="250" class="chart-text">S2</text>
+                                <text x="245" y="250" class="chart-text">S3</text>
+                                <text x="345" y="250" class="chart-text">S4</text>
+                                <text x="445" y="250" class="chart-text">S5</text>
+                                <text x="545" y="250" class="chart-text">S6</text>
+                                <text x="645" y="250" class="chart-text">S7</text>
+
+                            </svg>
+                        </div>
+
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <h2 class="text-lg font-bold">Today's Schedule</h2>
+                        <p class="mb-6 text-sm text-slate-500">Thursday, September 17</p>
+
+                        <div class="space-y-4">
+
+                            <div class="rounded-xl bg-indigo-50 p-4 dark:bg-indigo-950">
+                                <div class="flex justify-between">
+                                    <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-300">09:00 AM</span>
+                                    <span class="text-xs text-slate-500">Room 204</span>
+                                </div>
+                                <h3 class="mt-2 font-semibold">Web Development</h3>
+                                <p class="text-xs text-slate-500">Dr. Ahmed</p>
+                            </div>
+
+                            <div class="rounded-xl bg-blue-50 p-4 dark:bg-blue-950">
+                                <div class="flex justify-between">
+                                    <span class="text-xs font-semibold text-blue-600 dark:text-blue-300">11:00 AM</span>
+                                    <span class="text-xs text-slate-500">Lab 2</span>
+                                </div>
+                                <h3 class="mt-2 font-semibold">Database Systems</h3>
+                                <p class="text-xs text-slate-500">Ms. Sara</p>
+                            </div>
+
+                            <div class="rounded-xl bg-purple-50 p-4 dark:bg-purple-950">
+                                <div class="flex justify-between">
+                                    <span class="text-xs font-semibold text-purple-600 dark:text-purple-300">02:00 PM</span>
+                                    <span class="text-xs text-slate-500">Room 301</span>
+                                </div>
+                                <h3 class="mt-2 font-semibold">Software Engineering</h3>
+                                <p class="text-xs text-slate-500">Mr. Hassan</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-6 grid gap-6 xl:grid-cols-2">
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="mb-5 flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-bold">Upcoming Assignments</h2>
+                                <p class="text-sm text-slate-500">Your pending academic work</p>
+                            </div>
+
+                            <button data-section="assignments"
+                                class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                View All
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+
+                            <div class="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+
+                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300">
+                                    WD
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="font-semibold">Portfolio Website</h3>
+                                    <p class="text-sm text-slate-500">Web Development</p>
+                                </div>
+
+                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600">
+                                    Tomorrow
+                                </span>
+
+                            </div>
+
+                            <div class="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+
+                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300">
+                                    DB
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="font-semibold">Database Project</h3>
+                                    <p class="text-sm text-slate-500">Database Systems</p>
+                                </div>
+
+                                <span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600">
+                                    3 Days
+                                </span>
+
+                            </div>
+
+                            <div class="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+
+                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300">
+                                    SE
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="font-semibold">SRS Document</h3>
+                                    <p class="text-sm text-slate-500">Software Engineering</p>
+                                </div>
+
+                                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
+                                    5 Days
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="mb-5">
+                            <h2 class="text-lg font-bold">Announcements</h2>
+                            <p class="text-sm text-slate-500">Latest university updates</p>
+                        </div>
+
+                        <div class="space-y-4">
+
+                            <div class="border-l-4 border-indigo-500 pl-4">
+                                <p class="text-xs text-slate-500">Today</p>
+                                <h3 class="mt-1 font-semibold">Midterm examination schedule released</h3>
+                                <p class="mt-1 text-sm text-slate-500">
+                                    Check the examination section for updated dates.
+                                </p>
+                            </div>
+
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <p class="text-xs text-slate-500">Yesterday</p>
+                                <h3 class="mt-1 font-semibold">Library timing updated</h3>
+                                <p class="mt-1 text-sm text-slate-500">
+                                    The library will remain open until 9 PM.
+                                </p>
+                            </div>
+
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <p class="text-xs text-slate-500">3 days ago</p>
+                                <h3 class="mt-1 font-semibold">Semester registration reminder</h3>
+                                <p class="mt-1 text-sm text-slate-500">
+                                    Complete your registration before the deadline.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="courses" class="dashboard-section hidden">
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold">My Courses</h1>
+                    <p class="mt-1 text-slate-500">Courses enrolled this semester.</p>
+                </div>
+
+                <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+
+                    <div class="course-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <span class="rounded-lg bg-indigo-100 px-3 py-2 text-sm font-bold text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300">CS-301</span>
+                            <span class="text-sm text-emerald-600">Active</span>
+                        </div>
+
+                        <h2 class="mt-5 text-xl font-bold">Web Development</h2>
+                        <p class="mt-2 text-sm text-slate-500">Dr. Ahmed Khan</p>
+
+                        <div class="mt-5">
+                            <div class="mb-2 flex justify-between text-sm">
+                                <span>Progress</span>
+                                <span>82%</span>
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-700">
+                                <div class="h-2 w-[82%] rounded-full bg-indigo-600"></div>
+                            </div>
+                        </div>
+
+                        <button class="course-button mt-6 w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                            View Course
+                        </button>
+
+                    </div>
+
+                    <div class="course-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <span class="rounded-lg bg-blue-100 px-3 py-2 text-sm font-bold text-blue-600 dark:bg-blue-900 dark:text-blue-300">CS-302</span>
+                            <span class="text-sm text-emerald-600">Active</span>
+                        </div>
+
+                        <h2 class="mt-5 text-xl font-bold">Database Systems</h2>
+                        <p class="mt-2 text-sm text-slate-500">Ms. Sara Ahmed</p>
+
+                        <div class="mt-5">
+                            <div class="mb-2 flex justify-between text-sm">
+                                <span>Progress</span>
+                                <span>74%</span>
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-700">
+                                <div class="h-2 w-[74%] rounded-full bg-blue-600"></div>
+                            </div>
+                        </div>
+
+                        <button class="course-button mt-6 w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">
+                            View Course
+                        </button>
+
+                    </div>
+
+                    <div class="course-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                        <div class="flex items-center justify-between">
+                            <span class="rounded-lg bg-purple-100 px-3 py-2 text-sm font-bold text-purple-600 dark:bg-purple-900 dark:text-purple-300">CS-303</span>
+                            <span class="text-sm text-emerald-600">Active</span>
+                        </div>
+
+                        <h2 class="mt-5 text-xl font-bold">Software Engineering</h2>
+                        <p class="mt-2 text-sm text-slate-500">Mr. Hassan Ali</p>
+
+                        <div class="mt-5">
+                            <div class="mb-2 flex justify-between text-sm">
+                                <span>Progress</span>
+                                <span>68%</span>
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-700">
+                                <div class="h-2 w-[68%] rounded-full bg-purple-600"></div>
+                            </div>
+                        </div>
+
+                        <button class="course-button mt-6 w-full rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white transition hover:bg-purple-700">
+                            View Course
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="assignments" class="dashboard-section hidden">
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold">Assignments</h1>
+                    <p class="mt-1 text-slate-500">Track your upcoming and completed assignments.</p>
+                </div>
+
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                    <div class="overflow-x-auto">
+
+                        <table class="w-full text-left text-sm">
+
+                            <thead class="bg-slate-50 dark:bg-slate-800">
+                                <tr>
+                                    <th class="px-6 py-4">Assignment</th>
+                                    <th class="px-6 py-4">Course</th>
+                                    <th class="px-6 py-4">Due Date</th>
+                                    <th class="px-6 py-4">Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+
+                                <tr>
+                                    <td class="px-6 py-5 font-semibold">Portfolio Website</td>
+                                    <td class="px-6 py-5 text-slate-500">Web Development</td>
+                                    <td class="px-6 py-5">Sep 18, 2026</td>
+                                    <td class="px-6 py-5">
+                                        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600">Pending</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="px-6 py-5 font-semibold">Database Project</td>
+                                    <td class="px-6 py-5 text-slate-500">Database Systems</td>
+                                    <td class="px-6 py-20">Sep 20, 2026</td>
+                                    <td class="px-6 py-5">
+                                        <span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600">In Progress</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="px-6 py-5 font-semibold">SRS Document</td>
+                                    <td class="px-6 py-5 text-slate-500">Software Engineering</td>
+                                    <td class="px-6 py-5">Sep 22, 2026</td>
+                                    <td class="px-6 py-5">
+                                        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">Submitted</span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="schedule" class="dashboard-section hidden">
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold">Class Schedule</h1>
+                    <p class="mt-1 text-slate-500">Your weekly academic schedule.</p>
+                </div>
+
+                <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+
+                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 dark:border-indigo-900 dark:bg-indigo-950">
+                        <p class="text-sm font-bold text-indigo-600 dark:text-indigo-300">MONDAY</p>
+                        <h2 class="mt-4 text-xl font-bold">Web Development</h2>
+                        <p class="mt-2 text-sm text-slate-500">09:00 AM - 11:00 AM</p>
+                        <p class="mt-1 text-sm text-slate-500">Room 204</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-blue-100 bg-blue-50 p-6 dark:border-blue-900 dark:bg-blue-950">
+                        <p class="text-sm font-bold text-blue-600 dark:text-blue-300">TUESDAY</p>
+                        <h2 class="mt-4 text-xl font-bold">Database Systems</h2>
+                        <p class="mt-2 text-sm text-slate-500">11:00 AM - 01:00 PM</p>
+                        <p class="mt-1 text-sm text-slate-500">Lab 2</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-purple-100 bg-purple-50 p-6 dark:border-purple-900 dark:bg-purple-950">
+                        <p class="text-sm font-bold text-purple-600 dark:text-purple-300">WEDNESDAY</p>
+                        <h2 class="mt-4 text-xl font-bold">Software Engineering</h2>
+                        <p class="mt-2 text-sm text-slate-500">02:00 PM - 04:00 PM</p>
+                        <p class="mt-1 text-sm text-slate-500">Room 301</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 dark:border-emerald-900 dark:bg-emerald-950">
+                        <p class="text-sm font-bold text-emerald-600 dark:text-emerald-300">THURSDAY</p>
+                        <h2 class="mt-4 text-xl font-bold">Web Development</h2>
+                        <p class="mt-2 text-sm text-slate-500">09:00 AM - 11:00 AM</p>
+                        <p class="mt-1 text-sm text-slate-500">Room 204</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-orange-100 bg-orange-50 p-6 dark:border-orange-900 dark:bg-orange-950">
+                        <p class="text-sm font-bold text-orange-600 dark:text-orange-300">FRIDAY</p>
+                        <h2 class="mt-4 text-xl font-bold">Database Lab</h2>
+                        <p class="mt-2 text-sm text-slate-500">10:00 AM - 12:00 PM</p>
+                        <p class="mt-1 text-sm text-slate-500">Lab 2</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="grades" class="dashboard-section hidden">
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold">Grades</h1>
+                    <p class="mt-1 text-slate-500">Your latest academic results.</p>
+                </div>
+
+                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-900">
+                        <p class="text-sm text-slate-500">Web Development</p>
+                        <p class="mt-3 text-3xl font-bold">A</p>
+                        <p class="mt-1 text-sm text-emerald-600">92 / 100</p>
+                    </div>
+
+                    <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-900">
+                        <p class="text-sm text-slate-500">Database Systems</p>
+                        <p class="mt-3 text-3xl font-bold">A-</p>
+                        <p class="mt-1 text-sm text-emerald-600">88 / 100</p>
+                    </div>
+
+                    <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-900">
+                        <p class="text-sm text-slate-500">Software Engineering</p>
+                        <p class="mt-3 text-3xl font-bold">B+</p>
+                        <p class="mt-1 text-sm text-emerald-600">85 / 100</p>
+                    </div>
+
+                    <div class="rounded-2xl bg-white p-6 shadow-sm dark:bg-slate-900">
+                        <p class="text-sm text-slate-500">Data Structures</p>
+                        <p class="mt-3 text-3xl font-bold">A</p>
+                        <p class="mt-1 text-sm text-emerald-600">94 / 100</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="announcements" class="dashboard-section hidden">
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold">Announcements</h1>
+                    <p class="mt-1 text-slate-500">Important academic announcements.</p>
+                </div>
+
+                <div class="space-y-5">
+
+                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <span class="text-xs font-semibold text-indigo-600">TODAY</span>
+                        <h2 class="mt-2 text-xl font-bold">Midterm examination schedule released</h2>
+                        <p class="mt-3 text-sm leading-6 text-slate-500">
+                            The university has released the midterm examination schedule.
+                            Students should review their examination dates and prepare accordingly.
+                        </p>
+                    </article>
+
+                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <span class="text-xs font-semibold text-blue-600">YESTERDAY</span>
+                        <h2 class="mt-2 text-xl font-bold">Library timing updated</h2>
+                        <p class="mt-3 text-sm leading-6 text-slate-500">
+                            The library will remain open until 9 PM during examination preparation weeks.
+                        </p>
+                    </article>
+
+                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <span class="text-xs font-semibold text-purple-600">3 DAYS AGO</span>
+                        <h2 class="mt-2 text-xl font-bold">Semester registration reminder</h2>
+                        <p class="mt-3 text-sm leading-6 text-slate-500">
+                            Students are reminded to complete semester registration before the deadline.
+                        </p>
+                    </article>
+
+                </div>
+
+            </section>
+
+            <section id="settings" class="dashboard-section hidden">
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold">Settings</h1>
+                    <p class="mt-1 text-slate-500">Manage your dashboard preferences.</p>
+                </div>
+
+                <div class="max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-6 dark:border-slate-800">
+
+                        <div>
+                            <h2 class="font-semibold">Dark Mode</h2>
+                            <p class="mt-1 text-sm text-slate-500">
+                                Change the dashboard appearance.
+                            </p>
+                        </div>
+
+                        <button id="settingsThemeButton"
+                            class="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+                            Toggle
+                        </button>
+
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6">
+
+                        <div>
+                            <h2 class="font-semibold">Notifications</h2>
+                            <p class="mt-1 text-sm text-slate-500">
+                                Receive academic notifications.
+                            </p>
+                        </div>
+
+                        <button id="notificationToggle"
+                            class="relative h-7 w-12 rounded-full bg-indigo-600 transition">
+
+                            <span class="absolute right-1 top-1 h-5 w-5 rounded-full bg-white transition"></span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <footer class="border-t border-slate-200 px-6 py-6 text-center text-sm text-slate-500 dark:border-slate-800">
+            © 2026 StudentHub. Student Academic Dashboard.
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

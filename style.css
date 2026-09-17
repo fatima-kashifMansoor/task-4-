@@ -1,0 +1,64 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.active-nav {
+    background: rgb(238 242 255);
+    color: rgb(79 70 229);
+}
+
+.dark .active-nav {
+    background: rgb(49 46 129);
+    color: rgb(199 210 254);
+}
+
+.nav-link {
+    color: rgb(100 116 139);
+    transition: 0.2s;
+}
+
+.nav-link:hover {
+    background: rgb(248 250 252);
+    color: rgb(79 70 229);
+}
+
+.dark .nav-link {
+    color: rgb(148 163 184);
+}
+
+.dark .nav-link:hover {
+    background: rgb(30 41 59);
+    color: rgb(165 180 252);
+}
+
+.chart-line {
+    stroke: rgb(226 232 240);
+    stroke-width: 1;
+}
+
+.dark .chart-line {
+    stroke: rgb(51 65 85);
+}
+
+.chart-text {
+    fill: rgb(100 116 139);
+    font-size: 13px;
+}
+
+.dark .chart-text {
+    fill: rgb(148 163 184);
+}
+
+button {
+    cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .chart-text {
+        font-size: 10px;
+    }
+}
